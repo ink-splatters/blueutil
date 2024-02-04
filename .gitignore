@@ -10,3 +10,5 @@ build/
 *.perspectivev3
 project.xcworkspace/
 xcuserdata/
+/.direnv
+/blueutil-*
