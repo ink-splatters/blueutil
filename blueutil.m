@@ -572,8 +572,10 @@ const char *hci_error_descriptions[] = {
 }
 @end
 
-#define OP_FUNC(name, operator) \
-  bool op_##name(const long a, const long b) { return a operator b; }
+#define OP_FUNC(name, operator)                \
+  bool op_##name(const long a, const long b) { \
+    return a operator b;                       \
+  }
 
 OP_FUNC(gt, >);
 OP_FUNC(ge, >=);

@@ -12,3 +12,4 @@ project.xcworkspace/
 xcuserdata/
 /.direnv
 /blueutil-*
+/.pre-commit-config.yaml

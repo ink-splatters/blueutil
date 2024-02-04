@@ -5,7 +5,7 @@ CLI for bluetooth on OSX: power, discoverable state, list, inquire devices, conn
 ## Usage
 
 <!--USAGE[-->
-```
+```shell
 Usage:
   blueutil [options]
 
@@ -72,6 +72,14 @@ Exit codes:
 <!--]USAGE-->
 
 ## Install/update/uninstall
+
+### Nix / flakes
+
+Using [nix](https://nixos.org):
+
+```sh
+nix profile install github:ink-splatters/blueutil --accept-flake-config
+```
 
 ### Homebrew
 

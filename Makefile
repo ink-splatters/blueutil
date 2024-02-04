@@ -6,6 +6,9 @@ bindir = $(prefix)/bin
 INSTALL = install
 INSTALL_PROGRAM = $(INSTALL) -m 755
 
+blueutil:
+	xcodebuild
+	ln -sf blueutil-*/*/*/*/blueutil ./blueutil
 all: build
 
 build: blueutil
@@ -21,7 +24,7 @@ test: build
 	./test
 
 clean:
-	$(RM) blueutil
+	$(RM) -rf blueutil blueutil-*
 
 install: build
 	$(INSTALL_PROGRAM) blueutil $(DESTDIR)$(bindir)/blueutil
