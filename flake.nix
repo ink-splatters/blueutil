@@ -29,8 +29,8 @@
     flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
-        inherit (pkgs) llvmPackages mkShell lib;
-        inherit (llvmPackages) stdenv;
+        inherit (pkgs) mkShell lib;
+        inherit (pkgs.llvmPackages_17) stdenv;
         inherit (pkgs.darwin.apple_sdk) frameworks;
 
       in {
