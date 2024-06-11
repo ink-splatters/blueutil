@@ -6,9 +6,9 @@
 //
 // Originally written by Frederik Seiffert <ego@frederikseiffert.de> http://www.frederikseiffert.de/blueutil/
 //
-// Copyright (c) 2011-2023 Ivan Kuchin. See <LICENSE.txt> for details.
+// Copyright (c) 2011-2024 Ivan Kuchin. See <LICENSE.txt> for details.
 
-#define VERSION "2.9.1"
+#define VERSION "2.10.0"
 
 #import <IOBluetooth/IOBluetooth.h>
 
@@ -138,7 +138,7 @@ void usage(FILE *io) {
     "    -v, --version             show version",
     "",
     "STATE can be one of: 1, on, 0, off, toggle",
-    "ID can be either address in form xxxxxxxxxxxx, xx-xx-xx-xx-xx-xx or xx:xx:xx:xx:xx:xx, or name of device to search in used devices",
+    "ID can be either address in form xxxxxxxxxxxx, xx-xx-xx-xx-xx-xx or xx:xx:xx:xx:xx:xx, or name of device to search in paired or recent devices",
     "OP can be one of: >, >=, <, <=, =, !=; or equivalents: gt, ge, lt, le, eq, ne",
     "PERIOD is in seconds, defaults to 1",
     "TIMEOUT is in seconds, default value 0 doesn't add timeout",
@@ -279,14 +279,24 @@ IOBluetoothDevice *get_device(char *id) {
       exit(EXIT_FAILURE);
     }
   } else {
-    NSArray *recentDevices = [IOBluetoothDevice recentDevices:0];
+    NSMutableArray *searchDevices = [NSMutableArray new];
 
-    if (!recentDevices) {
-      eprintf("No recent devices to search for: %s\n", id);
+    NSArray *pairedDevices = [IOBluetoothDevice pairedDevices];
+    if (pairedDevices) {
+      [searchDevices addObjectsFromArray:pairedDevices];
+    }
+
+    NSArray *recentDevices = [IOBluetoothDevice recentDevices:0];
+    if (recentDevices) {
+      [searchDevices addObjectsFromArray:recentDevices];
+    }
+
+    if (searchDevices.count <= 0) {
+      eprintf("No paired or recent devices to search for: %s\n", id);
       exit(EXIT_FAILURE);
     }
 
-    NSArray *byName = [recentDevices filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"name == %@", nsId]];
+    NSArray *byName = [searchDevices filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"name == %@", nsId]];
     if (byName.count > 0) {
       device = byName.firstObject;
     }
@@ -839,11 +849,16 @@ int main(int argc, char *argv[]) {
             DeviceInquiryRunLoopStopper *stopper = [[[DeviceInquiryRunLoopStopper alloc] init] autorelease];
             IOBluetoothDeviceInquiry *inquirer = [IOBluetoothDeviceInquiry inquiryWithDelegate:stopper];
 
-            [inquirer setInquiryLength:args->duration];
-
             [inquirer start];
+
+            // inquiry length seems to be ingored starting with Monterey
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, args->duration * NSEC_PER_SEC),
+              dispatch_get_main_queue(),
+              ^{
+                [inquirer stop];
+              });
+
             CFRunLoopRun();
-            [inquirer stop];
 
             list_devices([inquirer foundDevices], false);
           }

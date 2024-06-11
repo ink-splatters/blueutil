@@ -47,7 +47,7 @@ Without options outputs current state
     -v, --version             show version
 
 STATE can be one of: 1, on, 0, off, toggle
-ID can be either address in form xxxxxxxxxxxx, xx-xx-xx-xx-xx-xx or xx:xx:xx:xx:xx:xx, or name of device to search in used devices
+ID can be either address in form xxxxxxxxxxxx, xx-xx-xx-xx-xx-xx or xx:xx:xx:xx:xx:xx, or name of device to search in paired or recent devices
 OP can be one of: >, >=, <, <=, =, !=; or equivalents: gt, ge, lt, le, eq, ne
 PERIOD is in seconds, defaults to 1
 TIMEOUT is in seconds, default value 0 doesn't add timeout
@@ -184,4 +184,4 @@ open "https://github.com/toy/blueutil/releases/new?tag=$(git describe --tags --a
 
 Originally written by Frederik Seiffert ego@frederikseiffert.de http://www.frederikseiffert.de/blueutil/
 
-Copyright (c) 2011-2023 Ivan Kuchin. See [LICENSE.txt](LICENSE.txt) for details.
+Copyright (c) 2011-2024 Ivan Kuchin. See [LICENSE.txt](LICENSE.txt) for details.
