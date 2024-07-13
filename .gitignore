@@ -13,3 +13,4 @@ xcuserdata/
 /.direnv
 /blueutil-*
 /.pre-commit-config.yaml
+/result
