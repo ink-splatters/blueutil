@@ -36,7 +36,7 @@
       let
         pkgs = nixpkgs.legacyPackages.${system};
         inherit (pkgs) mkShell lib;
-        inherit (pkgs.llvmPackages_17) stdenv;
+        inherit (pkgs.llvmPackages_18) stdenv;
         inherit (pkgs.darwin.apple_sdk) frameworks;
 
       in {
