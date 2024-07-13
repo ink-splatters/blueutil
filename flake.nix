@@ -3,18 +3,22 @@
 
   inputs = {
     nixpkgs.url = "nixpkgs/nixpkgs-unstable";
-    systems.url = "github:nix-systems/default-darwin";
+    systems.url = "github:nix-systems/default";
+
+    gitignore = {
+      url = "github:hercules-ci/gitignore.nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     flake-utils = {
       url = "github:numtide/flake-utils";
       inputs.systems.follows = "systems";
     };
-
-    pre-commit-hooks = {
-      url = "github:cachix/pre-commit-hooks.nix";
+    git-hooks = {
+      url = "github:cachix/git-hooks.nix";
       inputs = {
+        gitignore.follows = "gitignore";
         nixpkgs.follows = "nixpkgs";
         nixpkgs-stable.follows = "nixpkgs";
-        flake-utils.follows = "flake-utils";
       };
     };
   };
@@ -27,7 +31,7 @@
   };
 
 
-  outputs = { nixpkgs, flake-utils, pre-commit-hooks, self, ... }:
+  outputs = { nixpkgs, flake-utils, git-hooks, self, ... }:
     flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
@@ -37,7 +41,7 @@
 
       in {
         checks = {
-          pre-commit-check = pre-commit-hooks.lib.${system}.run {
+          pre-commit-check = git-hooks.lib.${system}.run {
             src = ./.;
             hooks = {
               clang-format.enable = true;
